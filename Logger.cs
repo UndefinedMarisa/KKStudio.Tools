@@ -40,6 +40,7 @@ namespace KKStudio.Tools
 				{
 					try
 					{
+						// 写入日志文件，此部分为构造日志字符串
 						StreamWriter streamWriter = new StreamWriter(Logger.LogPath + Logger.LogFileName, true);
 						DateTime now = DateTime.Now;
 						StringBuilder logMessageBuilder = new StringBuilder();
@@ -100,7 +101,7 @@ namespace KKStudio.Tools
 			}
 		}
 
-		public static void Log(string data, object f1)
+		public static void Log(LogLevel type, string data, object f1)
 		{
 			object obj = Logger.locker;
 			lock (obj)
@@ -108,15 +109,34 @@ namespace KKStudio.Tools
 				if (Logger.WriteToConsole)
 				{
 					Console.WriteLine(data);
+					
+					if (Logger.WriteToConsole)
+					{
+						Console.WriteLine(data);
+					}
+				}
+				string logSign = "I";
+				if (type == LogLevel.Warning)
+				{
+					logSign = "W";
+				}
+				else if (type == LogLevel.Error)
+				{
+					logSign = "E";
+				}
+				else if (type == LogLevel.Info)
+				{
+					logSign = "I";
 				}
 				if (Logger.WriteLogFile)
 				{
 					try
 					{
-						StreamWriter streamWriter = new StreamWriter(Logger.LogPath + Logger.LogFileName, true);
+						StreamWriter streamWriter = new StreamWriter(Logger.LogPath + f1, true);
 						DateTime now = DateTime.Now;
 						StringBuilder logMessageBuilder = new StringBuilder();
-						logMessageBuilder.Append(now.ToString("dd.MM. HH:mm:ss.fff"));
+						logMessageBuilder.Append("[{logSign}] ");
+						logMessageBuilder.Append(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 						logMessageBuilder.Append("    ");
 						logMessageBuilder.Append(string.Format(data, f1));
 						streamWriter.WriteLine(logMessageBuilder.ToString());
@@ -129,7 +149,7 @@ namespace KKStudio.Tools
 			}
 		}
 
-		public static void Log(string data, object f1, object f2)
+		public static void Log(LogLevel type, string data, object f1, object f2)
 		{
 			object obj = Logger.locker;
 			lock (obj)
@@ -138,14 +158,28 @@ namespace KKStudio.Tools
 				{
 					Console.WriteLine(data);
 				}
+				string logSign = "I";
+				if (type == LogLevel.Warning)
+				{
+					logSign = "W";
+				}
+				else if (type == LogLevel.Error)
+				{
+					logSign = "E";
+				}
+				else if (type == LogLevel.Info)
+				{
+					logSign = "I";
+				}
 				if (Logger.WriteLogFile)
 				{
 					try
 					{
-						StreamWriter streamWriter = new StreamWriter(Logger.LogPath + Logger.LogFileName, true);
+						StreamWriter streamWriter = new StreamWriter(Logger.LogPath + f1, true);
 						DateTime now = DateTime.Now;
 						StringBuilder logMessageBuilder = new StringBuilder();
-						logMessageBuilder.Append(now.ToString("dd.MM. HH:mm:ss.fff"));
+						logMessageBuilder.Append("[{logSign}] ");
+						logMessageBuilder.Append(now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 						logMessageBuilder.Append("    ");
 						logMessageBuilder.Append(string.Format(data, f1, f2));
 						streamWriter.WriteLine(logMessageBuilder.ToString());
@@ -158,7 +192,7 @@ namespace KKStudio.Tools
 			}
 		}
 
-		public static void ForceLog(string data)
+		public static void ForceLog(LogLevel type, string data)
 		{
 			object obj = Logger.locker;
 			lock (obj)
